@@ -11,7 +11,9 @@ class TodoTask(models.Model):
     description = fields.Text(string='Detail / Catatan Tambahan')
     deadline = fields.Date(string='Batas Waktu (Deadline)')
     is_important = fields.Boolean(string='Penting?', default=False)
-    
+    category_id = fields.Many2one('todo.category', string='Kategori')
+    color = fields.Selection(related='category_id.color', string='Warna Label', store=True)
+
     priority = fields.Selection([
         ('0', 'Rendah'),
         ('1', 'Normal'),

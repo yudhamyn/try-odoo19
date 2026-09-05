@@ -9,6 +9,8 @@
                 <field name="priority" widget="priority"/>
                 <field name="name"/>
                 <field name="deadline"/>
+                <field name="category_id"/>
+                <field name="color"/>
                 <field name="is_important" widget="boolean_toggle"/>
                 <field name="state" widget="badge" 
                        decoration-info="state == 'in_progress'" 
@@ -46,6 +48,8 @@
                         </group>
                         <group>
                             <field name="is_important" widget="boolean_toggle"/>
+                            <field name="category_id"/>
+                            <field name="color"/>
                         </group>
                     </group>
                     <notebook>
@@ -106,7 +110,7 @@
     <record id="action_todo_task" model="ir.actions.act_window">
         <field name="name">Daftar Tugas</field>
         <field name="res_model">todo.task</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="view_todo_task_search"/>
         <field name="context">{'search_default_not_done': 1}</field>
         <field name="help" type="html">
@@ -124,4 +128,50 @@
 
     <!-- Sub Menu -->
     <menuitem id="menu_todo_task" name="Tugas Saya" parent="menu_todo_root" action="action_todo_task" sequence="10"/>
+
+
+
+<!-- KATEGORI START -->
+    <!-- List View untuk Kategori -->
+    <record id="view_todo_category_list" model="ir.ui.view">
+        <field name="name">todo.category.list</field>
+        <field name="model">todo.category</field>
+        <field name="arch" type="xml">
+            <list string="Kategori Tugas">
+                <field name="name"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View untuk Kategori -->
+    <record id="view_todo_category_form" model="ir.ui.view">
+        <field name="name">todo.category.form</field>
+        <field name="model">todo.category</field>
+        <field name="arch" type="xml">
+            <form string="Kategori Tugas">
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="Misal: Pekerjaan, Pribadi, dll..."/>
+                        <field name="color"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <!-- Action untuk Kategori -->
+    <record id="action_todo_category" model="ir.actions.act_window">
+        <field name="name">Kategori Tugas</field>
+        <field name="res_model">todo.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Sub Menu Konfigurasi & Kategori -->
+    <menuitem id="menu_todo_config" name="Konfigurasi" parent="menu_todo_root" sequence="90"/>
+    <menuitem id="menu_todo_category" name="Kategori" parent="menu_todo_config" action="action_todo_category" sequence="10"/>
+<!-- KATEGORI END -->
+
+
 </odoo>
