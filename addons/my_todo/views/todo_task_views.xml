@@ -6,6 +6,7 @@
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
             <list string="Daftar Tugas" decoration-info="state == 'in_progress'" decoration-success="state == 'done'" decoration-muted="state == 'cancel'">
+                <field name="code"/>
                 <field name="priority" widget="priority"/>
                 <field name="name"/>
                 <field name="deadline"/>
@@ -36,10 +37,13 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="name" string="Judul Tugas"/>
                         <h1>
-                            <field name="name" placeholder="Misal: Mempelajari modul Odoo 19..."/>
+                            <field name="code" readonly="1"/>
                         </h1>
+                        <label for="name" string="Judul Tugas"/>
+                        <h2>
+                            <field name="name" placeholder="Misal: Mempelajari modul Odoo 19..."/>
+                        </h2>
                     </div>
                     <group>
                         <group>
@@ -68,6 +72,7 @@
         <field name="model">todo.task</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" sample="1">
+                <field name="code"/>
                 <field name="name"/>
                 <field name="priority"/>
                 <field name="deadline"/>
@@ -75,7 +80,10 @@
                 <templates>
                     <t t-name="card">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <strong class="o_kanban_record_title"><field name="name"/></strong>
+                            <div>
+                                <span class="badge text-bg-light border me-1"><field name="code"/></span>
+                                <strong class="o_kanban_record_title"><field name="name"/></strong>
+                            </div>
                             <field name="priority" widget="priority"/>
                         </div>
                         <div class="text-muted small">

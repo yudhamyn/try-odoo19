@@ -7,6 +7,7 @@ class TodoTask(models.Model):
     _order = 'priority desc, deadline asc, id desc'
 
     # Field Data
+    code = fields.Char(string='Kode Tugas', required=True, copy=False, readonly=True, default='Baru')
     name = fields.Char(string='Judul Tugas', required=True)
     description = fields.Text(string='Detail / Catatan Tambahan')
     deadline = fields.Date(string='Batas Waktu (Deadline)')
@@ -28,6 +29,13 @@ class TodoTask(models.Model):
         ('cancel', 'Dibatalkan'),
     ], string='Status', default='draft', required=True)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('code', 'Baru') == 'Baru':
+                vals['code'] = self.env['ir.sequence'].next_by_code('todo.task.sequence') or 'Baru'
+        return super().create(vals_list)
+
     # Action Buttons untuk mengubah status
     def action_start(self):
         for rec in self:
@@ -44,3 +52,5 @@ class TodoTask(models.Model):
     def action_cancel(self):
         for rec in self:
             rec.state = 'cancel'
+
+    

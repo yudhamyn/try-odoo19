@@ -20,7 +20,9 @@ Fitur:
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/todo_task_sequence.xml',
         'views/todo_task_views.xml',
+
     ],
     'installable': True,
     'application': True,
