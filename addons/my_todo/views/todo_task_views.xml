@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List / Tree View -->
+    <record id="view_todo_task_list" model="ir.ui.view">
+        <field name="name">todo.task.list</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <list string="Daftar Tugas" decoration-info="state == 'in_progress'" decoration-success="state == 'done'" decoration-muted="state == 'cancel'">
+                <field name="priority" widget="priority"/>
+                <field name="name"/>
+                <field name="deadline"/>
+                <field name="is_important" widget="boolean_toggle"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'in_progress'" 
+                       decoration-success="state == 'done'" 
+                       decoration-warning="state == 'draft'" 
+                       decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_todo_task_form" model="ir.ui.view">
+        <field name="name">todo.task.form</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <form string="Detail Tugas">
+                <header>
+                    <button name="action_start" string="Mulai Kerjakan" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Tandai Selesai" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Batalkan" type="object" class="btn-secondary" invisible="state in ('done', 'cancel')"/>
+                    <button name="action_reset" string="Set ke Baru" type="object" invisible="state not in ('done', 'cancel')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Judul Tugas"/>
+                        <h1>
+                            <field name="name" placeholder="Misal: Mempelajari modul Odoo 19..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="deadline"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="is_important" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Deskripsi / Catatan">
+                            <field name="description" placeholder="Tuliskan catatan detail mengenai tugas ini..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_todo_task_kanban" model="ir.ui.view">
+        <field name="name">todo.task.kanban</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" sample="1">
+                <field name="name"/>
+                <field name="priority"/>
+                <field name="deadline"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="o_kanban_record_title"><field name="name"/></strong>
+                            <field name="priority" widget="priority"/>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fa fa-calendar me-1" title="Batas Waktu"/> <field name="deadline"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search / Filter View -->
+    <record id="view_todo_task_search" model="ir.ui.view">
+        <field name="name">todo.task.search</field>
+        <field name="model">todo.task</field>
+        <field name="arch" type="xml">
+            <search string="Cari Tugas">
+                <field name="name" string="Judul Tugas"/>
+                <filter string="Belum Selesai" name="not_done" domain="[('state', 'in', ['draft', 'in_progress'])]"/>
+                <filter string="Sudah Selesai" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Penting" name="important" domain="[('is_important', '=', True)]"/>
+                <group>
+                    <filter string="Kelompokkan Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Kelompokkan Prioritas" name="group_by_priority" context="{'group_by': 'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Window -->
+    <record id="action_todo_task" model="ir.actions.act_window">
+        <field name="name">Daftar Tugas</field>
+        <field name="res_model">todo.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_todo_task_search"/>
+        <field name="context">{'search_default_not_done': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Buat tugas pertama Anda di Odoo 19!
+            </p>
+            <p>
+                Kelola catatan, prioritas, dan pantau status pengerjaan tugas Anda dengan mudah.
+            </p>
+        </field>
+    </record>
+
+    <!-- Top Menu -->
+    <menuitem id="menu_todo_root" name="My Todo" sequence="10"/>
+
+    <!-- Sub Menu -->
+    <menuitem id="menu_todo_task" name="Tugas Saya" parent="menu_todo_root" action="action_todo_task" sequence="10"/>
+</odoo>
